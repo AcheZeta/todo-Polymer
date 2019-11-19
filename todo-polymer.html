@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer-element.html">
-
 <dom-module id="todo-polymer">
   <template>
     <style>
@@ -7,9 +6,33 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+    <h1>To-Do List!</h1>
+    <div>
+      <input type="text" name="" id="newTaskInput" placeholder="Agrega una Tarea">
+      <button on-click="saveTask">Guardar</button>
+    </div>
+    <div>
+      <ol>
+        <template is="dom-repeat" items="[[tasks]]" as="task">
+          <li>
+            <input on-change="someCheckboxChanged" type="checkbox" name="" id="">
+            [[task]]
+            <button on-click="deleteTask">Eliminar Tarea</button>
+          </li>
+        </template>
+      </ol>
+    </div>
+    <h2>Tareas finalizadas</h2>
+    <div>
+      <ul>
+        <template is="dom-repeat" items="[[completedTasks]]" as="task">
+          <li>
+            [[task]]
+          </li>
+        </template>
+      </ul>
+    </div>
   </template>
-
   <script>
     /**
      * `todo-polymer`
@@ -20,17 +43,41 @@
      * @demo demo/index.html
      */
     class TodoPolymer extends Polymer.Element {
-      static get is() { return 'todo-polymer'; }
+      static get is() {
+        return 'todo-polymer';
+      }
       static get properties() {
         return {
-          prop1: {
-            type: String,
-            value: 'todo-polymer'
+          tasks: {
+            type: Array,
+            value: []
+          },
+          completedTasks: {
+            type: Array,
+            value: []
           }
         };
       }
+      saveTask() {
+        const inputNode = this.shadowRoot.querySelector('#newTaskInput');
+        this.tasks = [...this.tasks, inputNode.value];
+        inputNode.value = '';
+      }
+      someCheckboxChanged(event) {
+        const checkboxIndex = this.tasks.indexOf(event.model.task);
+        const isChecked = event.currentTarget.checked;
+        if (isChecked) {
+          const removedTask = this.tasks.splice(checkboxIndex, 1).pop();
+          this.tasks = [...this.tasks];
+          this.completedTasks = [...this.completedTasks, removedTask];
+        }
+      }
+      deleteTask(event) {
+        const taskIndex = this.tasks.indexOf(event.model.task);
+        const selectedTask = this.tasks.splice(taskIndex, 1)
+        this.tasks = [...this.tasks]
+      }
     }
-
     window.customElements.define(TodoPolymer.is, TodoPolymer);
   </script>
 </dom-module>

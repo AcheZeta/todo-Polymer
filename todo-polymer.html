@@ -73,7 +73,7 @@
         }
       }
       deleteTask(event) {
-        const taskIndex = this.tasks.indexOf(event.model.task);
+        const taskIndex = event.model.index;
         const selectedTask = this.tasks.splice(taskIndex, 1)
         this.tasks = [...this.tasks]
       }
